@@ -281,6 +281,7 @@ const Index = () => {
                           onClick={() => {
                             setSelectedCategory('all');
                             setProgramSearch("");
+                            setProgramDialogOpen(true);
                           }}
                         >
                           <CardContent className="p-6 text-center">
@@ -294,6 +295,7 @@ const Index = () => {
                             onClick={() => {
                               setSelectedCategory(category.id);
                               setProgramSearch("");
+                              setProgramDialogOpen(true);
                             }}
                           >
                             <CardContent className="p-6 text-center">
