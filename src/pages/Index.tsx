@@ -25,7 +25,7 @@ const Index = () => {
   const [panchayaths, setPanchayaths] = useState<any[]>([]);
   const [programs, setPrograms] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [totalSubmissions, setTotalSubmissions] = useState(0);
   const [totalPanchayaths, setTotalPanchayaths] = useState(0);
   const [selectedPanchayath, setSelectedPanchayath] = useState("");
