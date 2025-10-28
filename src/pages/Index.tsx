@@ -265,7 +265,7 @@ const Index = () => {
                 <Dialog open={programDialogOpen} onOpenChange={setProgramDialogOpen}>
                   <DialogTrigger asChild>
                     <Button type="button" variant="outline" className="w-full justify-start text-left border-2 h-auto min-h-10 py-2">
-                      {selectedProgram ? programs.find(p => p.id === selectedProgram)?.name : customProgram ? customProgram : "Select program / പദ്ധതി തിരഞ്ഞെടുക്കുക"}
+                      {selectedProgram ? programs.find(p => p.id === selectedProgram)?.name : customProgram ? customProgram : ""}
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
@@ -289,7 +289,7 @@ const Index = () => {
                     <div className="flex gap-2 mb-3">
                       <div className="relative flex-1">
                         <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-                        <Input placeholder="Search programs... / പദ്ധതികൾ തിരയുക..." value={programSearch} onChange={e => setProgramSearch(e.target.value)} className="pl-8 h-9 text-sm" />
+                        <Input value={programSearch} onChange={e => setProgramSearch(e.target.value)} className="pl-8 h-9 text-sm" />
                       </div>
                       <Button type="button" size="sm" variant="outline" onClick={() => {
                         setSelectedProgram("");
@@ -306,7 +306,7 @@ const Index = () => {
                         <Label htmlFor="custom-program-input" className="text-base mb-2 block">
                           Your Own Program / നിങ്ങളുടെ സ്വന്തം പദ്ധതി
                         </Label>
-                        <Input id="custom-program-input" placeholder="Enter your program idea / നിങ്ങളുടെ പദ്ധതി" value={customProgram} onChange={e => setCustomProgram(e.target.value)} className="border-2" maxLength={200} />
+                        <Input id="custom-program-input" value={customProgram} onChange={e => setCustomProgram(e.target.value)} className="border-2" maxLength={200} />
                         <div className="mt-3 flex gap-2">
                           <Button type="button" size="sm" onClick={() => {
                           if (customProgram.trim()) {
@@ -384,7 +384,7 @@ const Index = () => {
                   </Label>
                   <Select value={selectedPanchayath} onValueChange={setSelectedPanchayath}>
                     <SelectTrigger id="panchayath" className="border-2">
-                      <SelectValue placeholder="Select panchayath / പഞ്ചായത്ത് തിരഞ്ഞെടുക്കുക" />
+                      <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-popover z-50">
                       {panchayaths.map(p => <SelectItem key={p.id} value={p.id}>
@@ -400,7 +400,7 @@ const Index = () => {
                   </Label>
                   <Select value={selectedWard} onValueChange={setSelectedWard} disabled={!selectedPanchayath}>
                     <SelectTrigger id="ward" className="border-2">
-                      <SelectValue placeholder="Select ward / വാർഡ് തിരഞ്ഞെടുക്കുക" />
+                      <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-popover z-50">
                       {wardNumbers.map(num => <SelectItem key={num} value={num.toString()}>
@@ -416,14 +416,14 @@ const Index = () => {
                   <Label htmlFor="name" className="text-base">
                     Name / പേര് *
                   </Label>
-                  <Input id="name" placeholder="Enter your name / നിങ്ങളുടെ പേര്" value={name} onChange={e => setName(e.target.value)} required maxLength={100} className="border-2" />
+                  <Input id="name" value={name} onChange={e => setName(e.target.value)} required maxLength={100} className="border-2" />
                 </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="mobile" className="text-base">
                     Mobile Number / മൊബൈൽ നമ്പർ *
                   </Label>
-                  <Input id="mobile" type="tel" placeholder="10-digit / 10 അക്കം" value={mobileNumber} onChange={e => setMobileNumber(e.target.value.replace(/\D/g, "").slice(0, 10))} required maxLength={10} className="border-2" />
+                  <Input id="mobile" type="tel" value={mobileNumber} onChange={e => setMobileNumber(e.target.value.replace(/\D/g, "").slice(0, 10))} required maxLength={10} className="border-2" />
                 </div>
               </div>
 
@@ -431,7 +431,7 @@ const Index = () => {
                 <Label htmlFor="age" className="text-base">
                   Age / പ്രായം *
                 </Label>
-                <Input id="age" type="number" placeholder="Enter your age / പ്രായം" value={age} onChange={e => setAge(e.target.value)} required min="1" max="150" className="border-2" />
+                <Input id="age" type="number" value={age} onChange={e => setAge(e.target.value)} required min="1" max="150" className="border-2" />
               </div>
 
               <Button type="submit" className="w-full text-lg py-6 shadow-glow" disabled={loading}>
