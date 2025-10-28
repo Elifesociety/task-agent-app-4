@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, CheckCircle2, Search, Info } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -55,8 +56,9 @@ const Index = () => {
     const {
       data
     } = await supabase.from("categories").select("*").order("name");
-    if (data) {
+    if (data && data.length > 0) {
       setCategories(data);
+      setSelectedCategory(data[0].id);
     }
   };
   const fetchPrograms = async () => {
@@ -272,91 +274,109 @@ const Index = () => {
                     <DialogHeader>
                       <DialogTitle>Select Program / പദ്ധതി തിരഞ്ഞെടുക്കുക</DialogTitle>
                     </DialogHeader>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      <Button type="button" size="sm" variant={!selectedCategory ? "default" : "outline"} onClick={() => {
-                        setSelectedCategory("");
-                        setProgramSearch("");
-                      }}>
-                        Show All / എല്ലാം കാണിക്കുക
-                      </Button>
-                      {categories.map(category => <Button key={category.id} type="button" size="sm" variant={selectedCategory === category.id ? "default" : "outline"} onClick={() => {
-                        setSelectedCategory(category.id);
-                        setProgramSearch("");
-                      }}>
-                          {category.name}
-                        </Button>)}
-                    </div>
-                    <div className="flex gap-2 mb-3">
-                      <div className="relative flex-1">
-                        <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-                        <Input value={programSearch} onChange={e => setProgramSearch(e.target.value)} className="pl-8 h-9 text-sm" />
-                      </div>
-                      <Button type="button" size="sm" variant="outline" onClick={() => {
-                        setSelectedProgram("");
-                        setShowCustomProgram(true);
-                        setProgramSearch("");
-                        setTimeout(() => {
-                          document.getElementById("custom-program-input")?.focus();
-                        }, 100);
-                      }} className="border-2 border-dashed text-slate-950 bg-sky-300 hover:bg-sky-200 whitespace-nowrap shrink-0">
-                        ഇവയിൽ ഒന്നുമല്ലാത്തത്
-                      </Button>
-                    </div>
-                    {showCustomProgram && <div className="mb-4 p-4 border-2 border-primary rounded-lg bg-accent/50">
-                        <Label htmlFor="custom-program-input" className="text-base mb-2 block">
-                          Your Own Program / നിങ്ങളുടെ സ്വന്തം പദ്ധതി
-                        </Label>
-                        <Input id="custom-program-input" value={customProgram} onChange={e => setCustomProgram(e.target.value)} className="border-2" maxLength={200} />
-                        <div className="mt-3 flex gap-2">
-                          <Button type="button" size="sm" onClick={() => {
-                          if (customProgram.trim()) {
-                            setProgramDialogOpen(false);
-                            setProgramSearch("");
-                          } else {
-                            toast({
-                              title: "Error",
-                              description: "Please enter a program name",
-                              variant: "destructive"
-                            });
-                          }
-                        }}>
-                            സമർപ്പിക്കുക (Submit)
-                          </Button>
-                          <Button type="button" size="sm" variant="outline" onClick={() => {
-                          setShowCustomProgram(false);
-                          setCustomProgram("");
-                        }}>
-                            Cancel
-                          </Button>
-                        </div>
-                      </div>}
-                    <div className="overflow-y-auto flex-1 space-y-2 pr-2">
-                      {programs.filter(p => (!selectedCategory || p.category_id === selectedCategory) && (p.name.toLowerCase().includes(programSearch.toLowerCase()) || p.category?.name.toLowerCase().includes(programSearch.toLowerCase()) || p.sub_category?.name.toLowerCase().includes(programSearch.toLowerCase()))).map(p => <div key={p.id} className={`flex items-start gap-2 p-4 rounded-lg border-2 transition-all ${selectedProgram === p.id ? 'border-primary bg-accent' : 'border-border'}`}>
-                            <div className="flex-1">
-                              <div className="font-medium">{p.name}</div>
-                              <div className="text-sm text-muted-foreground mt-1">
-                                {p.category?.name} → {p.sub_category?.name}
+                    
+                    <Tabs value={selectedCategory} onValueChange={(val) => {
+                      setSelectedCategory(val);
+                      setProgramSearch("");
+                    }} className="flex-1 flex flex-col overflow-hidden">
+                      <TabsList className="w-full justify-start overflow-x-auto flex-wrap h-auto">
+                        {categories.map(category => (
+                          <TabsTrigger key={category.id} value={category.id} className="flex-shrink-0">
+                            {category.name}
+                          </TabsTrigger>
+                        ))}
+                      </TabsList>
+
+                      {categories.map(category => (
+                        <TabsContent key={category.id} value={category.id} className="flex-1 flex flex-col overflow-hidden mt-4">
+                          <div className="flex gap-2 mb-3">
+                            <div className="relative flex-1">
+                              <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                              <Input value={programSearch} onChange={e => setProgramSearch(e.target.value)} className="pl-8 h-9 text-sm" />
+                            </div>
+                            <Button type="button" size="sm" variant="outline" onClick={() => {
+                              setSelectedProgram("");
+                              setShowCustomProgram(true);
+                              setProgramSearch("");
+                              setTimeout(() => {
+                                document.getElementById("custom-program-input")?.focus();
+                              }, 100);
+                            }} className="border-2 border-dashed text-slate-950 bg-sky-300 hover:bg-sky-200 whitespace-nowrap shrink-0">
+                              ഇവയിൽ ഒന്നുമല്ലാത്തത്
+                            </Button>
+                          </div>
+
+                          {showCustomProgram && (
+                            <div className="mb-4 p-4 border-2 border-primary rounded-lg bg-accent/50">
+                              <Label htmlFor="custom-program-input" className="text-base mb-2 block">
+                                Your Own Program / നിങ്ങളുടെ സ്വന്തം പദ്ധതി
+                              </Label>
+                              <Input id="custom-program-input" value={customProgram} onChange={e => setCustomProgram(e.target.value)} className="border-2" maxLength={200} />
+                              <div className="mt-3 flex gap-2">
+                                <Button type="button" size="sm" onClick={() => {
+                                  if (customProgram.trim()) {
+                                    setProgramDialogOpen(false);
+                                    setProgramSearch("");
+                                  } else {
+                                    toast({
+                                      title: "Error",
+                                      description: "Please enter a program name",
+                                      variant: "destructive"
+                                    });
+                                  }
+                                }}>
+                                  സമർപ്പിക്കുക (Submit)
+                                </Button>
+                                <Button type="button" size="sm" variant="outline" onClick={() => {
+                                  setShowCustomProgram(false);
+                                  setCustomProgram("");
+                                }}>
+                                  Cancel
+                                </Button>
                               </div>
                             </div>
-                            <div className="flex flex-col gap-2 shrink-0">
-                              {p.description && <Button type="button" size="sm" variant="secondary" onClick={() => {
-                            setSelectedProgramDetail(p);
-                            setDetailDialogOpen(true);
-                          }}>
-                                  കൂടുതൽ അറിയാൻ
-                                </Button>}
-                              <Button type="button" size="sm" variant="default" onClick={() => {
-                            setSelectedProgram(p.id);
-                            setShowCustomProgram(false);
-                            setCustomProgram("");
-                            setProgramDialogOpen(false);
-                            setProgramSearch("");
-                          }}>
-                                താല്പര്യമുണ്ട്
-                              </Button>
-                            </div>
-                          </div>)}
-                    </div>
+                          )}
+
+                          <div className="overflow-y-auto flex-1 space-y-2 pr-2">
+                            {programs
+                              .filter(p => 
+                                p.category_id === category.id && 
+                                (p.name.toLowerCase().includes(programSearch.toLowerCase()) || 
+                                 p.sub_category?.name.toLowerCase().includes(programSearch.toLowerCase()))
+                              )
+                              .map(p => (
+                                <div key={p.id} className={`flex items-start gap-2 p-4 rounded-lg border-2 transition-all ${selectedProgram === p.id ? 'border-primary bg-accent' : 'border-border'}`}>
+                                  <div className="flex-1">
+                                    <div className="font-medium">{p.name}</div>
+                                    <div className="text-sm text-muted-foreground mt-1">
+                                      {p.category?.name} → {p.sub_category?.name}
+                                    </div>
+                                  </div>
+                                  <div className="flex flex-col gap-2 shrink-0">
+                                    {p.description && (
+                                      <Button type="button" size="sm" variant="secondary" onClick={() => {
+                                        setSelectedProgramDetail(p);
+                                        setDetailDialogOpen(true);
+                                      }}>
+                                        കൂടുതൽ അറിയാൻ
+                                      </Button>
+                                    )}
+                                    <Button type="button" size="sm" variant="default" onClick={() => {
+                                      setSelectedProgram(p.id);
+                                      setShowCustomProgram(false);
+                                      setCustomProgram("");
+                                      setProgramDialogOpen(false);
+                                      setProgramSearch("");
+                                    }}>
+                                      താല്പര്യമുണ്ട്
+                                    </Button>
+                                  </div>
+                                </div>
+                              ))}
+                          </div>
+                        </TabsContent>
+                      ))}
+                    </Tabs>
                   </DialogContent>
                 </Dialog>
               </div>
