@@ -274,20 +274,34 @@ const Index = () => {
                       <DialogTitle>Select Program / പദ്ധതി തിരഞ്ഞെടുക്കുക</DialogTitle>
                     </DialogHeader>
                     
-                    <Tabs value={selectedCategory} onValueChange={(val) => {
-                      setSelectedCategory(val);
-                      setProgramSearch("");
-                    }} className="flex-1 flex flex-col overflow-hidden">
-                      <TabsList className="w-full justify-start overflow-x-auto flex-wrap h-auto gap-2">
-                        <TabsTrigger value="all" className="flex-shrink-0 px-6 py-2 text-base">
-                          All Programs
-                        </TabsTrigger>
+                    <div className="flex-1 flex flex-col overflow-hidden">
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+                        <Card 
+                          className={`cursor-pointer transition-all hover:shadow-lg ${selectedCategory === 'all' ? 'border-primary border-2 bg-accent' : 'border-border hover:border-primary/50'}`}
+                          onClick={() => {
+                            setSelectedCategory('all');
+                            setProgramSearch("");
+                          }}
+                        >
+                          <CardContent className="p-6 text-center">
+                            <h3 className="text-lg font-semibold">All Programs</h3>
+                          </CardContent>
+                        </Card>
                         {categories.map(category => (
-                          <TabsTrigger key={category.id} value={category.id} className="flex-shrink-0 px-6 py-2 text-base">
-                            {category.name}
-                          </TabsTrigger>
+                          <Card 
+                            key={category.id}
+                            className={`cursor-pointer transition-all hover:shadow-lg ${selectedCategory === category.id ? 'border-primary border-2 bg-accent' : 'border-border hover:border-primary/50'}`}
+                            onClick={() => {
+                              setSelectedCategory(category.id);
+                              setProgramSearch("");
+                            }}
+                          >
+                            <CardContent className="p-6 text-center">
+                              <h3 className="text-lg font-semibold">{category.name}</h3>
+                            </CardContent>
+                          </Card>
                         ))}
-                      </TabsList>
+                      </div>
 
                       <div className="mt-4 space-y-3">
                         <div className="flex gap-2">
@@ -343,7 +357,7 @@ const Index = () => {
                           </div>
                         )}
                       </div>
-                    </Tabs>
+                    </div>
                   </DialogContent>
                 </Dialog>
               </div>
