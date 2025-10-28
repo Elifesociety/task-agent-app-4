@@ -279,9 +279,9 @@ const Index = () => {
                       setSelectedCategory(val);
                       setProgramSearch("");
                     }} className="flex-1 flex flex-col overflow-hidden">
-                      <TabsList className="w-full justify-start overflow-x-auto flex-wrap h-auto">
+                      <TabsList className="w-full justify-start overflow-x-auto flex-wrap h-auto gap-2">
                         {categories.map(category => (
-                          <TabsTrigger key={category.id} value={category.id} className="flex-shrink-0">
+                          <TabsTrigger key={category.id} value={category.id} className="flex-shrink-0 px-6 py-2 text-base">
                             {category.name}
                           </TabsTrigger>
                         ))}
@@ -289,53 +289,17 @@ const Index = () => {
 
                       {categories.map(category => (
                         <TabsContent key={category.id} value={category.id} className="flex-1 flex flex-col overflow-hidden mt-4">
-                          <div className="flex gap-2 mb-3">
-                            <div className="relative flex-1">
-                              <Search className="absolute left-2.5 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-                              <Input value={programSearch} onChange={e => setProgramSearch(e.target.value)} className="pl-8 h-9 text-sm" />
+                          <div className="mb-3">
+                            <div className="relative">
+                              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                              <Input 
+                                value={programSearch} 
+                                onChange={e => setProgramSearch(e.target.value)} 
+                                placeholder="Search programs..."
+                                className="pl-10 h-10"
+                              />
                             </div>
-                            <Button type="button" size="sm" variant="outline" onClick={() => {
-                              setSelectedProgram("");
-                              setShowCustomProgram(true);
-                              setProgramSearch("");
-                              setTimeout(() => {
-                                document.getElementById("custom-program-input")?.focus();
-                              }, 100);
-                            }} className="border-2 border-dashed text-slate-950 bg-sky-300 hover:bg-sky-200 whitespace-nowrap shrink-0">
-                              ഇവയിൽ ഒന്നുമല്ലാത്തത്
-                            </Button>
                           </div>
-
-                          {showCustomProgram && (
-                            <div className="mb-4 p-4 border-2 border-primary rounded-lg bg-accent/50">
-                              <Label htmlFor="custom-program-input" className="text-base mb-2 block">
-                                Your Own Program / നിങ്ങളുടെ സ്വന്തം പദ്ധതി
-                              </Label>
-                              <Input id="custom-program-input" value={customProgram} onChange={e => setCustomProgram(e.target.value)} className="border-2" maxLength={200} />
-                              <div className="mt-3 flex gap-2">
-                                <Button type="button" size="sm" onClick={() => {
-                                  if (customProgram.trim()) {
-                                    setProgramDialogOpen(false);
-                                    setProgramSearch("");
-                                  } else {
-                                    toast({
-                                      title: "Error",
-                                      description: "Please enter a program name",
-                                      variant: "destructive"
-                                    });
-                                  }
-                                }}>
-                                  സമർപ്പിക്കുക (Submit)
-                                </Button>
-                                <Button type="button" size="sm" variant="outline" onClick={() => {
-                                  setShowCustomProgram(false);
-                                  setCustomProgram("");
-                                }}>
-                                  Cancel
-                                </Button>
-                              </div>
-                            </div>
-                          )}
 
                           <div className="overflow-y-auto flex-1 space-y-2 pr-2">
                             {programs
