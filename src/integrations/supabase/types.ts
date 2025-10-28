@@ -65,7 +65,9 @@ export type Database = {
           created_at: string | null
           description: string | null
           id: string
+          is_top: boolean | null
           name: string
+          priority: number | null
           sub_category_id: string
         }
         Insert: {
@@ -73,7 +75,9 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           id?: string
+          is_top?: boolean | null
           name: string
+          priority?: number | null
           sub_category_id: string
         }
         Update: {
@@ -81,7 +85,9 @@ export type Database = {
           created_at?: string | null
           description?: string | null
           id?: string
+          is_top?: boolean | null
           name?: string
+          priority?: number | null
           sub_category_id?: string
         }
         Relationships: [

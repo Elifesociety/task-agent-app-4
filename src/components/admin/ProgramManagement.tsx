@@ -92,6 +92,8 @@ const ProgramManagement = () => {
     const { data } = await supabase
       .from("programs")
       .select("*, categories(name), sub_categories(name)")
+      .order("is_top", { ascending: false })
+      .order("priority", { ascending: false })
       .order("name");
     if (data) setPrograms(data);
   };
@@ -308,6 +310,8 @@ const ProgramManagement = () => {
                 <TableHead>Category</TableHead>
                 <TableHead>Sub-Category</TableHead>
                 <TableHead>Program</TableHead>
+                <TableHead>Top 10</TableHead>
+                <TableHead>Priority</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
             </TableHeader>
@@ -323,6 +327,53 @@ const ProgramManagement = () => {
                   <TableCell>{p.categories?.name}</TableCell>
                   <TableCell>{p.sub_categories?.name}</TableCell>
                   <TableCell>{p.name}</TableCell>
+                  <TableCell>
+                    <Button
+                      variant={p.is_top ? "default" : "outline"}
+                      size="sm"
+                      onClick={async () => {
+                        const { error } = await supabase
+                          .from("programs")
+                          .update({ is_top: !p.is_top })
+                          .eq("id", p.id);
+                        
+                        if (error) {
+                          toast({
+                            title: "Error",
+                            description: error.message,
+                            variant: "destructive",
+                          });
+                        } else {
+                          toast({ 
+                            title: "Success", 
+                            description: p.is_top ? "Removed from top 10" : "Added to top 10" 
+                          });
+                          fetchPrograms();
+                        }
+                      }}
+                    >
+                      {p.is_top ? "✓ Top" : "Set Top"}
+                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    <Input
+                      type="number"
+                      value={p.priority || 0}
+                      onChange={async (e) => {
+                        const newPriority = parseInt(e.target.value) || 0;
+                        const { error } = await supabase
+                          .from("programs")
+                          .update({ priority: newPriority })
+                          .eq("id", p.id);
+                        
+                        if (!error) {
+                          fetchPrograms();
+                        }
+                      }}
+                      className="w-20"
+                      min="0"
+                    />
+                  </TableCell>
                   <TableCell>
                     <div className="flex gap-2">
                       <Button
